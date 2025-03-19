@@ -2,17 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-input[type='number']::-webkit-inner-spin-button {
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* adding components classes */
+/* <main className="bg-primary" mode에 따라 동작 */
+.bg-primary {
+  @apply bg-white dark:bg-slate-900 text-blue-500 dark:text-white;
+}
+.bg-menu-primary {
+  @apply bg-white dark:bg-slate-900 text-blue-500 dark:text-white;
+}
+.bg-page-primary {
+  @apply bg-white dark:bg-slate-900 text-gray-700 dark:text-white;
+}
+

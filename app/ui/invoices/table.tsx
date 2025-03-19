@@ -1,8 +1,8 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import Image from "next/image";
+import { UpdateInvoice, DeleteInvoice } from "@/app/ui/invoices/buttons";
+import InvoiceStatus from "@/app/ui/invoices/status";
+import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
+import { fetchFilteredInvoices } from "@/app/lib/db/fetch";
 
 export default async function InvoicesTable({
   query,
@@ -14,16 +14,16 @@ export default async function InvoicesTable({
   const invoices = await fetchFilteredInvoices(query, currentPage);
 
   return (
-    <div className="mt-6 flow-root">
+    <div className="mt-6 flow-root ">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
             {invoices?.map((invoice) => (
               <div
                 key={invoice.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
+                className="mb-2 w-full rounded-md bg-white p-4 border-b"
               >
-                <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center justify-between  pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
@@ -33,7 +33,7 @@ export default async function InvoicesTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p className="text-blue-600">{invoice.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">{invoice.email}</p>
                   </div>
@@ -46,7 +46,7 @@ export default async function InvoicesTable({
                     </p>
                     <p>{formatDateToLocal(invoice.date)}</p>
                   </div>
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
                     <UpdateInvoice id={invoice.id} />
                     <DeleteInvoice id={invoice.id} />
                   </div>
