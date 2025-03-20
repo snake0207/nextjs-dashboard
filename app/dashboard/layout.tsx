@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="h-20 flex justify-end items-center p-[8px]">
           <ThemeToggle />
         </div>
-        <div className="bg-page-primary flex-grow p-6 md:overflow-y-auto md:p-12 border">
+        <div className="bg-page-primary flex-grow p-6 md:overflow-y-auto md:p-12">
           {children}
         </div>
       </div>

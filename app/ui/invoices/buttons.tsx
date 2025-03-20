@@ -1,6 +1,19 @@
-import { deleteInvoice } from "@/app/lib/action";
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+"use client";
+
+import { deleteInvoice, handleExcelDownload } from "@/app/lib/action";
+import {
+  ArrowDownIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useActionState } from "react";
+
+const initFormState = {
+  success: false,
+  message: "",
+};
 
 export function CreateInvoice() {
   return (
@@ -34,6 +47,43 @@ export function DeleteInvoice({ id }: { id: string }) {
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
+    </form>
+  );
+}
+
+export function DownloadInvoice({
+  dataLen,
+  query,
+}: {
+  dataLen: number;
+  query: string;
+}) {
+  const handleExcelDownloadWithQuery = handleExcelDownload.bind(null, query);
+  const [formState, formAction] = useActionState(
+    handleExcelDownloadWithQuery,
+    initFormState
+  );
+  const disableClass = dataLen === 0 ? "bg-gray-300 cursor-not-allowed" : "";
+
+  console.debug("formState >> ", formState);
+
+  return (
+    <form action={formAction} id={"id-download"}>
+      <div className={"hidden md:block "}>
+        <button
+          disabled={dataLen === 0 ? true : false}
+          aria-describedby="download-error"
+          className={`flex items-center justify-center w-[160px] rounded-md border p-2 bg-green-400 text-white ${disableClass}`}
+        >
+          <span className="">Export</span>{" "}
+          <ArrowDownIcon className="h-5 md:ml-4" />
+        </button>
+      </div>
+      <div id="download-error" aria-live="polite" aria-atomic="true">
+        {!formState.success && (
+          <p className="mt-2 text-sm text-red-500">{formState?.message}</p>
+        )}
+      </div>
     </form>
   );
 }

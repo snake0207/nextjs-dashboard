@@ -120,6 +120,40 @@ export async function fetchFilteredInvoices(
     throw new Error("Failed to fetch invoices.");
   }
 }
+export async function fetchInvoices(
+  query: string,
+) {
+
+  try {
+    const invoices = await dbPool.query(
+      `
+    SELECT
+      invoices.id,
+      invoices.amount,
+      invoices.date,
+      invoices.status,
+      customers.name,
+      customers.email,
+      customers.image_url
+    FROM invoices
+    JOIN customers ON invoices.customer_id = customers.id
+    WHERE
+      customers.name ILIKE $1 OR
+      customers.email ILIKE $1 OR
+      invoices.amount::text ILIKE $1 OR
+      invoices.date::text ILIKE $1 OR
+      invoices.status ILIKE $1
+    ORDER BY invoices.date DESC
+  `,
+      [`%${query}%`]
+    );
+
+    return invoices.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch invoices.");
+  }
+}
 
 export async function fetchInvoicesPages(query: string) {
   try {

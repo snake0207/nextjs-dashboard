@@ -49,7 +49,7 @@ export const transaction = async (text: string, values?: any[]) => {
 type DMLInfo = {
   text: string;
   elapsed_time: number;
-  rows: number;
+  rows: any;
 };
 
 type PoolInfo = {
@@ -62,7 +62,7 @@ const Log = (
   { text, elapsed_time, rows }: DMLInfo,
   { active, idle, waiting }: PoolInfo
 ) => {
-  console.debug("DML >>> ", new Date().toLocaleString(), {
+  console.info("DML >>> ", new Date().toLocaleString(), {
     text,
     elapsed_time,
     rows,

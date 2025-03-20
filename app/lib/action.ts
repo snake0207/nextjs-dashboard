@@ -7,6 +7,8 @@ import { z } from "zod";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import * as dbPool from "@/app/lib/db/pool";
+import { fetchFilteredInvoices, fetchInvoices } from "@/app/lib/db/fetch";
+import createExcel from "@/app/lib/excel";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -111,6 +113,30 @@ export async function deleteInvoice(id: string) {
     return { message: "Deleted Invoice." };
   } catch (error) {
     return { message: `Database Error: Failed to Delete Invoice.(${error})` };
+  }
+}
+
+export async function handleExcelDownload(query: string) {
+  try {
+    const invoices = await fetchInvoices(query);
+    const datas = invoices.map((invoice) => ({
+      이름: invoice.name,
+      이메일: invoice.email,
+    }));
+    const isOk = await createExcel({
+      fname: "인보이스",
+      sheetName: "고객정보",
+      datas: datas,
+    });
+    revalidatePath("/dashboard/invoices");
+    return isOk
+      ? { success: true, message: "Select Invoice." }
+      : { success: false, message: "Create excel report Error." };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Database Error: Failed to Select Invoice.(${error})`,
+    };
   }
 }
 

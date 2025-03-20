@@ -1,24 +1,37 @@
-import { Revenue } from './definitions';
+import { Revenue } from "./definitions";
 
 export const formatCurrency = (amount: number) => {
-  return (amount / 100).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  return (amount / 100).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
   });
 };
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = 'en-US',
-) => {
+export const formatDateToLocal = (dateStr: string, locale: string = "kr") => {
   const date = new Date(dateStr);
   const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
+};
+
+// YYYY-MM-DDTHH:mm:ss.sssZ 형식의 날짜를
+// YYYYMMDD + concatStr + HHmmss 형식으로 변경
+export const formatDateTimeLocal = (concatStr: string) => {
+  // 미국시간(UTC)을 한국시간으로
+  const TIME_ZONE = 9 * 60 * 60 * 1000;
+  const [today, ctime] = new Date(Date.now() + TIME_ZONE)
+    .toISOString()
+    .split("T");
+
+  return (
+    today.replace(/\-/g, "") +
+    concatStr +
+    ctime.split(".")[0].replace(/\:/g, "")
+  );
 };
 
 export const generateYAxis = (revenue: Revenue[]) => {
@@ -45,13 +58,13 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the current page is among the first 3 pages,
   // show the first 3, an ellipsis, and the last 2 pages.
   if (currentPage <= 3) {
-    return [1, 2, 3, '...', totalPages - 1, totalPages];
+    return [1, 2, 3, "...", totalPages - 1, totalPages];
   }
 
   // If the current page is among the last 3 pages,
   // show the first 2, an ellipsis, and the last 3 pages.
   if (currentPage >= totalPages - 2) {
-    return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
+    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
   }
 
   // If the current page is somewhere in the middle,
@@ -59,11 +72,11 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   // another ellipsis, and the last page.
   return [
     1,
-    '...',
+    "...",
     currentPage - 1,
     currentPage,
     currentPage + 1,
-    '...',
+    "...",
     totalPages,
   ];
 };
