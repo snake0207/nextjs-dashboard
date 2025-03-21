@@ -1,5 +1,5 @@
 import SideNav from "@/app/ui/dashboard/sidenav";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import ThemeToggle from "@/app/ui/themeToggle";
 
 export const metadata: Metadata = {
