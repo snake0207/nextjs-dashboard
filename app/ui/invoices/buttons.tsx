@@ -80,7 +80,9 @@ export function DownloadInvoice({
         </button>
       </div>
       <div id="download-error" aria-live="polite" aria-atomic="true">
-        {!formState.success && (
+        {formState.success ? (
+          <Link className="mt-2 text-sm text-blue-500 dark:text-white" href={`${formState?.message}`}>Download</Link>
+        ) : (
           <p className="mt-2 text-sm text-red-500">{formState?.message}</p>
         )}
       </div>

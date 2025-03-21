@@ -123,15 +123,15 @@ export async function handleExcelDownload(query: string) {
       이름: invoice.name,
       이메일: invoice.email,
     }));
-    const isOk = await createExcel({
-      fname: "인보이스",
+    const filePath = await createExcel({
+      title: "2025년도 고객정보",
       sheetName: "고객정보",
       datas: datas,
     });
     revalidatePath("/dashboard/invoices");
-    return isOk
-      ? { success: true, message: "Select Invoice." }
-      : { success: false, message: "Create excel report Error." };
+    return (
+      filePath ?? { success: false, message: "Create excel report Error." }
+    );
   } catch (error) {
     return {
       success: false,
