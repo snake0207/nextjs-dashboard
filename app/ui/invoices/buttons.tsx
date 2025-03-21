@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteInvoice, handleExcelDownload } from "@/app/lib/action";
+import { deleteInvoice, handleExcelReport } from "@/app/lib/action";
 import {
   ArrowDownIcon,
   PencilIcon,
@@ -9,11 +9,6 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useActionState } from "react";
-
-const initFormState = {
-  success: false,
-  message: "",
-};
 
 export function CreateInvoice() {
   return (
@@ -51,16 +46,17 @@ export function DeleteInvoice({ id }: { id: string }) {
   );
 }
 
-export function DownloadInvoice({
+export function CreateExcelInvoice({
   dataLen,
   query,
 }: {
   dataLen: number;
   query: string;
 }) {
-  const handleExcelDownloadWithQuery = handleExcelDownload.bind(null, query);
+  const handleExcelReportWithQuery = handleExcelReport.bind(null, query);
+  const initFormState = { message: "", file: "" };
   const [formState, formAction] = useActionState(
-    handleExcelDownloadWithQuery,
+    handleExcelReportWithQuery,
     initFormState
   );
   const disableClass = dataLen === 0 ? "bg-gray-300 cursor-not-allowed" : "";
@@ -79,9 +75,14 @@ export function DownloadInvoice({
           <ArrowDownIcon className="h-5 md:ml-4" />
         </button>
       </div>
-      <div id="download-error" aria-live="polite" aria-atomic="true">
-        {formState.success ? (
-          <Link className="mt-2 text-sm text-blue-500 dark:text-white" href={`${formState?.message}`}>Download</Link>
+      <div id="download-error" className="text-right" aria-live="polite" aria-atomic="true">
+        {formState?.file.length > 0 ? (
+          <Link
+            className="mt-2 text-sm text-blue-500 dark:text-white"
+            href={`${formState?.file}`}
+          >
+            Excel Download
+          </Link>
         ) : (
           <p className="mt-2 text-sm text-red-500">{formState?.message}</p>
         )}

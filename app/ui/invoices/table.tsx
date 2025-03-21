@@ -2,7 +2,7 @@ import Image from "next/image";
 import {
   UpdateInvoice,
   DeleteInvoice,
-  DownloadInvoice,
+  CreateExcelInvoice,
 } from "@/app/ui/invoices/buttons";
 import InvoiceStatus from "@/app/ui/invoices/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
@@ -20,7 +20,7 @@ export default async function InvoicesTable({
   return (
     <>
       <div className="mt-4 flex items-center justify-end">
-        <DownloadInvoice dataLen={invoices.length} query={query} />
+        <CreateExcelInvoice dataLen={invoices.length} query={query} />
       </div>
       <div className="mt-6 flow-root ">
         <div className="inline-block min-w-full align-middle">

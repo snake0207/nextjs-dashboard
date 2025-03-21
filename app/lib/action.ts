@@ -7,8 +7,8 @@ import { z } from "zod";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import * as dbPool from "@/app/lib/db/pool";
-import { fetchFilteredInvoices, fetchInvoices } from "@/app/lib/db/fetch";
-import createExcel from "@/app/lib/excel";
+import { fetchInvoices } from "@/app/lib/db/fetch";
+import makeExcelReport from "@/app/lib/excel";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -24,19 +24,25 @@ const FormSchema = z.object({
   date: z.string(),
 });
 
-export type State = {
+export type TState = {
+  message?: string | null;
+  errors?: object;
+};
+
+export type TStateInvoice = TState & {
   errors?: {
     customerId?: string[];
     amount?: string[];
     status?: string[];
   };
-  message?: string | null;
 };
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function createInvoice(prevState: State, formData: FormData) {
-  // const { customerId, amount, status } = CreateInvoice.parse({
+export async function createInvoice(
+  prevState: TStateInvoice,
+  formData: FormData
+) {
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get("customerId"),
     amount: formData.get("amount"),
@@ -75,7 +81,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 export async function updateInvoice(
   id: string,
-  prevState: State,
+  prevState: TStateInvoice,
   formData: FormData
 ) {
   const validatedFields = UpdateInvoice.safeParse({
@@ -116,28 +122,34 @@ export async function deleteInvoice(id: string) {
   }
 }
 
-export async function handleExcelDownload(query: string) {
+export type TStateExcel = TState & {};
+
+export async function handleExcelReport(query: string) {
   try {
     const invoices = await fetchInvoices(query);
     const datas = invoices.map((invoice) => ({
       이름: invoice.name,
       이메일: invoice.email,
     }));
-    const filePath = await createExcel({
+    const result = await makeExcelReport({
       title: "2025년도 고객정보",
       sheetName: "고객정보",
       datas: datas,
     });
-    revalidatePath("/dashboard/invoices");
     return (
-      filePath ?? { success: false, message: "Create excel report Error." }
+      result ?? {
+        message: "Create excel report Error.",
+        file: ``,
+      }
     );
   } catch (error) {
     return {
-      success: false,
       message: `Database Error: Failed to Select Invoice.(${error})`,
+      file: ``,
     };
   }
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
 }
 
 export async function authenticate(

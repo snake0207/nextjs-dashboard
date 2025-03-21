@@ -2,7 +2,7 @@ import * as XLSX from "xlsx";
 import * as fs from "fs";
 import { formatDateTimeLocal } from "@/app/lib/utils";
 
-export default async function createExcel({
+export default async function makeExcelReport({
   title,
   sheetName,
   datas,
@@ -30,7 +30,10 @@ export default async function createExcel({
         formatDateTimeLocal("") +
         `-${title}.xlsx`;
       XLSX.writeFile(wb, `public${fileName}`);
-      return { success: true, message: `${fileName}` };
+      return {
+        message: `create excel file`,
+        file: `${fileName}`,
+      };
     }
   } catch (error) {
     console.debug("#================== Export Error : ", error);
