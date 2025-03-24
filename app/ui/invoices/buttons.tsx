@@ -61,7 +61,7 @@ export function CreateExcelInvoice({
   );
   const disableClass = dataLen === 0 ? "bg-gray-300 cursor-not-allowed" : "";
 
-  console.debug("formState >> ", formState);
+  console.info("formState >> ", formState);
 
   return (
     <form action={formAction} id={"id-download"}>
@@ -75,7 +75,12 @@ export function CreateExcelInvoice({
           <ArrowDownIcon className="h-5 md:ml-4" />
         </button>
       </div>
-      <div id="download-error" className="text-right" aria-live="polite" aria-atomic="true">
+      <div
+        id="download-error"
+        className="text-right"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {formState?.file.length > 0 ? (
           <Link
             className="mt-2 text-sm text-blue-500 dark:text-white"

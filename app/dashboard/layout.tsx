@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <SideNav />
       </div>
       <div className="flex flex-col">
-        <div className="h-20 flex justify-end items-center p-[8px]">
+        <div className="h-20 flex justify-end items-center p-[8px] mr-4">
           <ThemeToggle />
         </div>
         <div className="bg-page-primary flex-grow p-6 md:overflow-y-auto md:p-12">
